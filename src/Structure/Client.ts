@@ -84,7 +84,7 @@ export class BaseClient extends Client {
                     //@ts-ignore
                     const Event = new (Object.values(require(`../Events/${category}/${eventFile}`))[0])(this);
                     this.on(Event.name, (...args) => Event.run(this, ...args))
-                    console.log("[HANDLER] Event " + Event.name + " chargé.")
+                    console.log("[EVENT] Event " + Event.name + " chargé.")
                 } catch(e) {
                     console.log(e);
                 }
