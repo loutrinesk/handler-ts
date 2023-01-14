@@ -37,7 +37,7 @@ export class BaseClient extends Client {
                     const Command = new (Object.values(require(`../Commands/${category}/${commandFile}`))[0])(this);
                     cmd.push({
                         name: Command.name,
-                        description: Command.descrption,
+                        description: Command.description,
                         options: Command.options || null
                     })
                     console.log(Command.name)
