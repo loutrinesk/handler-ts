@@ -2,9 +2,8 @@ import {Client, Collection, REST, Routes} from "discord.js";
 import {Command} from "./Command";
 import {readdirSync} from 'node:fs';
 import * as dotenv from "dotenv";
-import {Ping} from "../Commands/misc/ping";
-
 dotenv.config();
+
 export class BaseClient extends Client {
     public commands: Collection<string, Command>
     constructor(options = {
@@ -19,13 +18,25 @@ export class BaseClient extends Client {
     }
     private loadBot(token: any, clientID: any) {
         this.login(token).then(() => {
-            console.log("Connexion au bot réussie")
+            console.log("[HANDLER] Connexion au bot réussie.")
         }).catch(() => {
-            throw new Error("Impossible de se connecter au bot")
+            throw new Error("[HANDLER] Impossible de se connecter au bot")
         });
 
-        this.loadCommand(token, clientID);
-    }
+        try {
+            this.loadCommand(token, clientID);
+            console.log("[HANDLER] Toutes les commandes ont été chargés.");
+        } catch(e) {
+            console.log("[HANDLER] Erreur durant le chargement des commandes: " + e);
+        };
+
+        try {
+            this.loadEvents();
+            console.log("[HANDLER] Tous les events ont été chargés.");
+        } catch (e) {
+            console.log("[HANDLER] Erreur durant le chargement des events: " + e);
+        }
+    };
     private loadCommand(token: any, clientID: any) {
         let cmd: any[] = [];
         const subFolders = readdirSync('./src/Commands');
@@ -40,7 +51,7 @@ export class BaseClient extends Client {
                         description: Command.description,
                         options: Command.options || null
                     })
-                    console.log(Command.name)
+                    console.log("[COMMANDS] Commande " + Command.name + " chargée.")
                     this.commands.set(Command.name, Command);
                 } catch(e) {
                     console.error(e);
@@ -61,5 +72,23 @@ export class BaseClient extends Client {
                 console.error(error);
             }
         }, 5000);
+    }
+
+    private loadEvents() {
+
+        const subFolders = readdirSync('./src/Events/')
+        for (const category of subFolders) {
+            const eventFiles = readdirSync(`./src/Events/${category}`).filter(file => file.endsWith('.ts'))
+            for (const eventFile of eventFiles) {
+                try {
+                    //@ts-ignore
+                    const Event = new (Object.values(require(`../Events/${category}/${eventFile}`))[0])(this);
+                    this.on(Event.name, (...args) => Event.run(this, ...args))
+                    console.log("[HANDLER] Event " + Event.name + " chargé.")
+                } catch(e) {
+                    console.log(e);
+                }
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@ import {Command} from "../../Structure/Command";
 import {BaseClient} from "../../Structure/Client";
 import {CommandInteraction} from "discord.js";
 
-export class Ping extends Command {
+export default class extends Command {
     constructor() {
         super({
             name: 'ping',
