@@ -1,6 +1,6 @@
 import {Command} from "../../Structure/Command";
 import {BaseClient} from "../../Structure/Client";
-import {CommandInteraction} from "discord.js";
+import {ChatInputCommandInteraction} from "discord.js";
 
 export default class extends Command {
     constructor() {
@@ -10,7 +10,7 @@ export default class extends Command {
         });
     }
 
-    async run (client: BaseClient, interaction: CommandInteraction) {
+    async run (client: BaseClient, interaction: ChatInputCommandInteraction) {
         interaction.reply("Pong!")
     }
 }

@@ -21,24 +21,24 @@ export class BaseClient extends Client {
     private loadBot(token: any, clientID: any) {
         this.login(token)
             .then(() => {
-                console.log("[HANDLER] Connexion au bot réussie.");
+                console.log(`[HANDLER] Connexion au bot réussie.`);
             })
             .catch(() => {
-                throw new Error("[HANDLER] Impossible de se connecter au bot");
+                throw new Error(`"[ERROR] Impossible de se connecter au bot`);
             });
 
         try {
             this.loadCommand(token, clientID);
-            console.log("[HANDLER] Toutes les commandes ont été chargés.");
+            console.log(`[HANDLER] Toutes les commandes ont été chargés.`);
         } catch (e) {
-            console.log("[HANDLER] Erreur durant le chargement des commandes: " + e);
+            console.log(`[ERROR] Erreur durant le chargement des commandes:` + e);
         }
 
         try {
             this.loadEvents();
             console.log("[HANDLER] Tous les events ont été chargés.");
         } catch (e) {
-            console.log("[HANDLER] Erreur durant le chargement des events: " + e);
+            console.log("[ERROR] Erreur durant le chargement des events: " + e);
         }
     }
     private loadCommand(token: any, clientID: any) {
@@ -97,7 +97,7 @@ export class BaseClient extends Client {
                     this.on(Event.name, (...args) => Event.run(this, ...args));
                     console.log("[EVENT] Event " + Event.name + " chargé.");
                 } catch (e) {
-                    console.log(e);
+                    console.log(`[ERROR] Erreur durant le chargement des events: ${e}`);
                 }
             }
         }

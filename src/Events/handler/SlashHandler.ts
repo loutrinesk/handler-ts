@@ -12,6 +12,7 @@ export default class extends Event {
     async run(client: BaseClient, interaction: CommandInteraction) {
         if (!interaction.isChatInputCommand()) return;
         if (!interaction.guild) return;
+        if (!interaction.channel) return;
         const command = client.commands.get(interaction.commandName);
 
         if (!command) {
